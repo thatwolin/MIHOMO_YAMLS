@@ -302,7 +302,7 @@ jobs:
           merge-multiple: true
 
       - name: Setup UPX
-        uses: crazy-max/ghaction-upx@v3
+        uses: crazy-max/ghaction-upx@v4
         with:
           version: latest
           install-only: true
