@@ -1,0 +1,42 @@
+name: Generate New OpenClash Overwrite (YAML Format)
+
+on:
+  push:
+    paths:
+      - 'THEYAMLS/**'
+      - '.github/scripts/gen_openclash_new.py'
+      - '.github/workflows/gen_openclash_new.yml'
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Generate new OpenClash overwrite configs
+        run: python .github/scripts/gen_openclash_new.py
+
+      - name: Commit and push generated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Overwrite/THENEWOPENCLASH/
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "chore(auto): update new OpenClash overwrite configs [skip ci]"
+          git push
